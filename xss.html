@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>XSS Practice Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    a { color: #0066cc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    main { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+    header h1 {
+      font-size: 2.8rem;
+      color: #222;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    /* Card container */
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* Input form */
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .input-group input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .input-group button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .input-group button:hover {
+      background: #0055a5;
+    }
+
+    /* Output area */
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9fafb;
+      border-left: 4px solid #0066cc;
+      min-height: 50px;
+      border-radius: 4px;
+      word-break: break-word;
+    }
+
+    /* Explanation content */
+    .explanation h2 {
+      margin-top: 0;
+      color: #222;
+    }
+    .explanation pre {
+      background: #eee;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .explanation ul {
+      margin-left: 20px;
+    }
+    .explanation li {
+      margin-bottom: 6px;
+    }
+
+    /* Footer / notes */
+    footer {
+      text-align: center;
+      margin: 50px 0 20px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>XSS Practice Lab</h1>
+      <p>Your own local sandbox for experimenting with reflected XSS — only on your machine.</p>
+    </header>
+
+    <div class="card">
+      <h2>Input & Reflection</h2>
+      <p>Enter something below and hit “Submit” to see how the page handles your input (intentionally unsafely).</p>
+
+      <div class="input-group">
+        <input id="inputBox" type="text" placeholder="Enter something...">
+        <button onclick="reflectInput()">Submit</button>
+      </div>
+
+      <div id="output">Awaiting input...</div>
+    </div>
+
+    <div class="card explanation">
+      <h2>What We Did & Why It’s Vulnerable</h2>
+      <p>This page reflects your input directly into the HTML using <code>innerHTML</code>, which means any HTML or JavaScript you type will be interpreted — exactly how many real-world XSS vulnerabilities work.</p>
+
+      <h3>Key Code</h3>
+      <pre>
+function reflectInput() {
+  const val = document.getElementById("inputBox").value;
+  document.getElementById("output").innerHTML = "You entered: " + val;
+}
+      </pre>
+
+      <h3>Try These (Locally Only)</h3>
+      <ul>
+        <li><code>&lt;h2&gt;Hi there!&lt;/h2&gt;</code></li>
+        <li><code>&lt;img src=x onerror="alert('XSS!')"&gt;</code></li>
+        <li><code>&lt;script&gt;alert('XSS test')&lt;/script&gt;</code></li>
+      </ul>
+
+      <h3>How Real Sites Should Protect Against This</h3>
+      <ul>
+        <li>Escape or sanitize user input before output</li>
+        <li>Avoid using <code>innerHTML</code> when possible</li>
+        <li>Use safer DOM APIs like <code>textContent</code></li>
+        <li>Apply security policies (e.g. Content Security Policy)</li>
+      </ul>
+
+      <p><strong>⚠️ Note:</strong> This lab is intentionally insecure for educational purposes. Do not copy this into any production or live environment.</p>
+      <a href="https://stirlinggee-crypto.github.io/sql_experament">learn SQL injection</a>
+    </div>
+
+    <footer>
+      Built for learning — your local sandbox only.
+    </footer>
+  </main>
+
+  <script>
+    function reflectInput() {
+      const val = document.getElementById("inputBox").value;
+      document.getElementById("output").innerHTML = "You entered: " + val;
+    }
+  </script>
+</body>
+</html>
+
